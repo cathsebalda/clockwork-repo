@@ -27,10 +27,14 @@ namespace Clockwork.API.Controllers
             return Ok(result);
         }
 
-        //public async Task<IActionResult> GetByTimezone(string timezone)
-        //{
+        [HttpGet("bytimezone/{timezone}")]
+        public async Task<IActionResult> GetByTimezone(string timezone)
+        {
+            var ip = this.HttpContext.Connection.RemoteIpAddress.ToString();
+            var result = await _currentTimeQueries.GetTimeByTimezone(ip, timezone);
 
-        //}
+            return Ok(result);
+        }
 
         [HttpGet("timelogs")]
         [ProducesResponseType(typeof(CurrentTimeQuery), (int)HttpStatusCode.OK)]

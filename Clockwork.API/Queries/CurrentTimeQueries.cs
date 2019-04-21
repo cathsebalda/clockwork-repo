@@ -16,7 +16,7 @@ namespace Clockwork.API.Queries
         {
             using (var db = new ClockworkContext())
             {
-                return await db.CurrentTimeQueries.Select(v => v).ToListAsync();
+                return await db.CurrentTimeQueries.Select(v => v).OrderByDescending(v => v.UTCTime).ToListAsync();
             }
         }
 
@@ -25,7 +25,7 @@ namespace Clockwork.API.Queries
             var utcTime = DateTime.UtcNow;
             var serverTime = DateTime.Now;
 
-            var returnVal = new CurrentTimeQuery
+            var timeLog = new CurrentTimeQuery
             {
                 UTCTime = utcTime,
                 ClientIp = ip,
@@ -34,7 +34,7 @@ namespace Clockwork.API.Queries
 
             using (var db = new ClockworkContext())
             {
-                await db.CurrentTimeQueries.AddAsync(returnVal);
+                await db.CurrentTimeQueries.AddAsync(timeLog);
                 var count = db.SaveChanges();
                 Console.WriteLine("{0} records saved to database", count);
 
@@ -45,7 +45,36 @@ namespace Clockwork.API.Queries
                 }
             }
 
-            return returnVal;
+            return timeLog;
+        }
+
+        public async Task<CurrentTimeQuery> GetTimeByTimezone(string ip, string timezone)
+        {
+            var utcTime = DateTime.UtcNow;
+            var serverTime = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.UtcNow, timezone); 
+            var timezoneDisplayName = TimeZoneInfo.FindSystemTimeZoneById(timezone).DisplayName;
+            var timeLog = new CurrentTimeQuery
+            {
+                UTCTime = utcTime,
+                ClientIp = ip,
+                Time = serverTime,
+                Timezone = timezoneDisplayName
+            };
+
+            using (var db = new ClockworkContext())
+            {
+                await db.CurrentTimeQueries.AddAsync(timeLog);
+                var count = db.SaveChanges();
+                Console.WriteLine("{0} records saved to database", count);
+
+                Console.WriteLine();
+                foreach (var CurrentTimeQuery in db.CurrentTimeQueries)
+                {
+                    Console.WriteLine(" - {0}", CurrentTimeQuery.UTCTime);
+                }
+            }
+
+            return timeLog;
         }
     }
 }

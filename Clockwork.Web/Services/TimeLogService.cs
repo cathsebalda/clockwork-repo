@@ -17,11 +17,13 @@ namespace Clockwork.Web.Services
     {
         private readonly IHttpClient _apiClient;
         private readonly string _remoteServiceBaseUrl;
+        private readonly string _remoteTimezoneServiceBaseUrl;
 
         public TimeLogService(IHttpClient apiClient)
         {
             _apiClient = apiClient;
             _remoteServiceBaseUrl = string.Format("{0}{1}", WebConfigurationManager.AppSettings["ClockworkAPIUrl"], "CurrentTime");
+            _remoteTimezoneServiceBaseUrl = string.Format("{0}{1}", WebConfigurationManager.AppSettings["ClockworkAPIUrl"], "Timezone");
         }
 
         public async Task<IEnumerable<TimeLogDTO>> GetAll()
@@ -48,12 +50,24 @@ namespace Clockwork.Web.Services
 
         public IEnumerable<SelectListItem> GetTimezones()
         {
-            TimeZoneInfo.GetSystemTimeZones();
-            foreach (TimeZoneInfo z in TimeZoneInfo.GetSystemTimeZones())
-            {
-                yield return new SelectListItem() { Value = z.Id, Text = z.DisplayName };
-            }
+            var getUri = $"{_remoteTimezoneServiceBaseUrl}";
 
+            var dataString = _apiClient.GetString(getUri);
+
+            var response = JsonConvert.DeserializeObject<IEnumerable<SelectListItem>>(dataString);
+
+            return response;
+        }
+
+        public async Task<TimeLogDTO> GetByTimezone(string timezone)
+        {
+            var getUri = $"{_remoteServiceBaseUrl}/bytimezone/{timezone}";
+
+            var dataString = await _apiClient.GetStringAsync(getUri);
+
+            var response = JsonConvert.DeserializeObject<TimeLogDTO>(dataString);
+
+            return response;
         }
     }
 }

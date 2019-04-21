@@ -35,6 +35,23 @@ namespace Clockwork.Web.Infrastructure.Resilience
             return await response.Content.ReadAsStringAsync();
         }
 
+        public string GetString(string uri)
+        {
+            using (var client = new HttpClient())
+            {
+                var response = client.GetAsync(uri).Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseContent = response.Content;
+
+                    return responseContent.ReadAsStringAsync().Result;
+                }
+
+                return null;
+            }
+        }
+
 
         private async Task<HttpResponseMessage> DoPostPutAsync<T>(HttpMethod method, string uri, T item, string authorizationToken = null, string requestId = null, string authorizationMethod = "Bearer")
         {

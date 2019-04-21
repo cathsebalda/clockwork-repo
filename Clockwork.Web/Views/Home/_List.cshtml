@@ -8,6 +8,7 @@
             <th class="min-width">IP</th>
             <th>Time</th>
             <th>UTC Time</th>
+            <th>Timezone</th>
         </tr>
     </thead>
     <tbody>
@@ -21,6 +22,7 @@
                     </td>
                     <td>@log.Time</td>
                     <td>@log.UTCTime</td>
+                    <td>@log.Timezone</td>
                 </tr>
 
             }
@@ -28,7 +30,7 @@
         else
         {
             <tr>
-                <td colspan="5">No time log to load.</td>
+                <td colspan="5">No time log data</td>
             </tr>
         }
     </tbody>

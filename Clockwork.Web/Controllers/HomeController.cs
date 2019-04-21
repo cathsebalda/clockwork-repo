@@ -1,13 +1,8 @@
 ﻿using Clockwork.Web.Models;
 using Clockwork.Web.Services.IServices;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
-using System.Web.Helpers;
 using System.Web.Mvc;
-using System.Web.Mvc.Ajax;
 using Unity;
 
 namespace Clockwork.Web.Controllers
@@ -25,7 +20,7 @@ namespace Clockwork.Web.Controllers
             ViewData["Version"] = mvcName.Version.Major + "." + mvcName.Version.Minor;
             ViewData["Runtime"] = isMono ? "Mono" : ".NET";
 
-            var model = new HomeModel()
+            var model = new TimezoneModel()
             {
                 SelectedTimezone = TimeZone.CurrentTimeZone.StandardName,
                 Timezones = TimeLog.GetTimezones()
@@ -34,14 +29,7 @@ namespace Clockwork.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetTime()
-        {
-            var model = await TimeLog.Get();
-            return Json(model, JsonRequestBehavior.AllowGet);
-        }
-
-        [HttpGet]
-        public async Task<ActionResult> GetList()
+        public async Task<ActionResult> TimeList()
         {
             var model =  await TimeLog.GetAll();
             return PartialView("_List", model);

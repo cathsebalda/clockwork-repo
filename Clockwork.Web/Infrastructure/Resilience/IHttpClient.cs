@@ -9,6 +9,8 @@ namespace Clockwork.Web.Infrastructure.Resilience
 {
     public interface IHttpClient
     {
+        string GetString(string uri);
+
         Task<string> GetStringAsync(string uri);
 
         Task<HttpResponseMessage> PostAsync<T>(string uri, T item);

@@ -10,5 +10,6 @@ namespace Clockwork.API.Queries.IQueries
     {
         Task<List<CurrentTimeQuery>> GetAllTimeLogs();
         Task<CurrentTimeQuery> GetTime(string ip);
+        Task<CurrentTimeQuery> GetTimeByTimezone(string ip, string timezone);
     }
 }

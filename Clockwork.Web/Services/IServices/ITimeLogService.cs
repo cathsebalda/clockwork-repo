@@ -12,6 +12,7 @@ namespace Clockwork.Web.Services.IServices
     {
         Task<IEnumerable<TimeLogDTO>> GetAll();
         Task<TimeLogDTO> Get();
+        Task<TimeLogDTO> GetByTimezone(string timezone);
         IEnumerable<SelectListItem> GetTimezones();
     }
 }
