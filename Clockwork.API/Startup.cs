@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Clockwork.API.Queries;
+using Clockwork.API.Queries.IQueries;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -25,6 +27,9 @@ namespace Clockwork.API
         {
             services.AddCors();
             services.AddMvc();
+
+            //Application Services
+            services.AddTransient<ICurrentTimeQueries, CurrentTimeQueries>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
